@@ -57,6 +57,7 @@
 #include "otautil/sysutil.h"
 #include "otautil/verifier.h"
 #include "private/setup_commands.h"
+#include "recovery_ui/device.h"
 #include "recovery_ui/ui.h"
 #include "recovery_utils/roots.h"
 #include "recovery_utils/thermalutil.h"
@@ -64,6 +65,7 @@
 using namespace std::chrono_literals;
 
 bool ask_to_ab_reboot(Device* device);
+bool ask_to_continue_unverified(Device* device);
 
 static constexpr int kRecoveryApiVersion = 3;
 // We define RECOVERY_API_VERSION in Android.mk, which will be picked up by build system and packed
@@ -633,7 +635,9 @@ static InstallResult VerifyAndInstallPackage(Package* package, bool* wipe_cache,
   // Verify package.
   if (!verify_package(package, ui)) {
     log_buffer->push_back(android::base::StringPrintf("error: %d", kZipVerificationFailure));
-    return INSTALL_CORRUPT;
+    if (!ui->IsTextVisible() || !ask_to_continue_unverified(ui->GetDevice())) {
+        return INSTALL_CORRUPT;
+    }
   }
 
   // Verify and install the contents of the package.
