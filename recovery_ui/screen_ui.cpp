@@ -576,48 +576,30 @@ void ScreenRecoveryUI::draw_foreground_locked() {
   }
 }
 
-/* recovery dark:  #7C4DFF
-   recovery light: #F890FF
-   fastbootd dark: #E65100
-   fastboot light: #FDD835 */
+/* pixel blue: #227BF6 */
 void ScreenRecoveryUI::SetColor(UIElement e) const {
   switch (e) {
     case UIElement::BATTERY_LOW:
-      if (fastbootd_logo_enabled_)
-        gr_color(0xfd, 0x35, 0x35, 255);
-      else
-        gr_color(0xc7, 0x15, 0x85, 255);
+      gr_color(0x22, 0x7b, 0xf6, 255);
       break;
     case UIElement::INFO:
-      if (fastbootd_logo_enabled_)
-        gr_color(0xfd, 0xd8, 0x35, 255);
-      else
-        gr_color(0xf8, 0x90, 0xff, 255);
+      gr_color(0x22, 0x7b, 0xf6, 255);
       break;
     case UIElement::HEADER:
-      if (fastbootd_logo_enabled_)
-        gr_color(0xfd, 0xd8,0x35, 255);
-      else
-        gr_color(0xf8, 0x90, 0xff, 255);
+      gr_color(0x22, 0x7b, 0xf6, 255);
       break;
     case UIElement::MENU:
       gr_color(0xd8, 0xd8, 0xd8, 255);
       break;
     case UIElement::MENU_SEL_BG:
     case UIElement::SCROLLBAR:
-      if (fastbootd_logo_enabled_)
-        gr_color(0xe6, 0x51, 0x00, 255);
-      else
-        gr_color(0x7c, 0x4d, 0xff, 255);
+      gr_color(0x22, 0x7b, 0xf6, 255);
       break;
     case UIElement::MENU_SEL_BG_ACTIVE:
       gr_color(0, 156, 100, 255);
       break;
     case UIElement::MENU_SEL_FG:
-      if (fastbootd_logo_enabled_)
-        gr_color(0, 0, 0, 255);
-      else
-        gr_color(0xd8, 0xd8, 0xd8, 255);
+      gr_color(0xd8, 0xd8, 0xd8, 255);
       break;
     case UIElement::LOG:
       gr_color(196, 196, 196, 255);
@@ -1188,14 +1170,12 @@ bool ScreenRecoveryUI::Init(const std::string& locale) {
   no_command_text_ = LoadLocalizedBitmap("no_command_text");
   error_text_ = LoadLocalizedBitmap("error_text");
 
+  lineage_logo_ = LoadBitmap("logo_image");
   back_icon_ = LoadBitmap("ic_back");
   back_icon_sel_ = LoadBitmap("ic_back_sel");
   if (android::base::GetBoolProperty("ro.boot.dynamic_partitions", false) ||
       android::base::GetBoolProperty("ro.fastbootd.available", false)) {
-    lineage_logo_ = LoadBitmap("logo_image_switch");
     fastbootd_logo_ = LoadBitmap("fastbootd");
-  } else {
-    lineage_logo_ = LoadBitmap("logo_image");
   }
 
   // Background text for "installing_update" could be "installing update" or
