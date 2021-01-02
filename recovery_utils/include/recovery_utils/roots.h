@@ -55,6 +55,13 @@ int format_volume(const std::string& volume);
 int format_volume(const std::string& volume, const std::string& directory,
                   std::string_view new_fstype);
 
+// Reformat the given volume (must be the mount point only, eg
+// "/cache"), no paths permitted.  Attempts to unmount the volume if
+// it is mounted.
+// Copies 'directory' to root of the newly formatted volume
+// Formats volume to fs
+int format_volume(const std::string& volume, const std::string& directory, const std::string fs);
+
 // Ensure that all and only the volumes that packages expect to find
 // mounted (/tmp and /cache) are mounted.  Returns 0 on success.
 int setup_install_mounts();
@@ -65,3 +72,5 @@ bool HasCache();
 void map_logical_partitions();
 
 bool logical_partitions_mapped();
+
+std::vector<std::string> get_data_fs_items();
