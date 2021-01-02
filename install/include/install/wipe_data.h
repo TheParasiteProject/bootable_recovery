@@ -20,6 +20,7 @@
 
 #include "recovery_ui/device.h"
 #include "recovery_ui/ui.h"
+#include "recovery_utils/roots.h"
 
 struct selabel_handle;
 
@@ -28,7 +29,10 @@ bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm,
                std::string_view new_fstype = "");
 
 // Returns true on success.
-bool WipeData(Device* device, bool keep_memtag_mode = false, std::string_view new_fstype = "");
+bool WipeData(Device* device, bool keep_memtag_mode = false, std::string_view new_fstype = volume_for_mount_point("/data")->fs_type);
+
+// Returns true on success.
+bool WipeData(Device* device, std::string fs);
 
 // Returns true on success.
 bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm,
