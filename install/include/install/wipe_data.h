@@ -30,4 +30,7 @@ bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm);
 bool WipeData(Device* device, bool keep_memtag_mode = false);
 
 // Returns true on success.
+bool WipeData(Device* device, , bool keep_memtag_mode = false, std::string fs);
+
+// Returns true on success.
 bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm);
