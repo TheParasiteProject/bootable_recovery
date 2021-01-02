@@ -18,7 +18,9 @@
 
 #include <fcntl.h>
 #include <linux/fs.h>
+#include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/ioctl.h>
 
 #include <functional>
@@ -43,6 +45,7 @@ constexpr const char* METADATA_ROOT = "/metadata";
 static bool EraseVolume(const char* volume, RecoveryUI* ui, std::string_view new_fstype) {
   LOG(INFO) << "Erasing volume " << volume << " with new filesystem type " << new_fstype;
   bool is_cache = (strcmp(volume, CACHE_ROOT) == 0);
+  bool is_data = (strcmp(volume, DATA_ROOT) == 0);
 
   std::vector<saved_log_file> log_files;
   if (is_cache) {
@@ -51,7 +54,7 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, std::string_view new
     log_files = ReadLogFilesToMemory();
   }
 
-  ui->Print("Formatting %s...\n", volume);
+  ui->Print("Formatting %s to %s...\n", volume, std::string(new_fstype).c_str());
 
   Volume* vol = volume_for_mount_point(volume);
   if (vol->fs_mgr_flags.logical) {
@@ -167,6 +170,10 @@ bool WipeData(Device* device, bool keep_memtag_mode, std::string_view data_fstyp
   }
   ui->Print("Data wipe %s.\n", success ? "complete" : "failed");
   return success;
+}
+
+bool WipeData(Device* device, std::string fs) {
+  return WipeData(device, false, fs);
 }
 
 bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm_func,
