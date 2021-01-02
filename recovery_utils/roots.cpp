@@ -166,6 +166,16 @@ int ensure_volume_unmounted(const std::string& blk_device) {
   return 0;
 }
 
+std::vector<std::string> get_data_fs_items() {
+  std::vector<std::string> ret;
+  for (auto& entry : fstab) {
+    if (entry.mount_point == "/data") {
+      ret.emplace_back(entry.fs_type);
+    }
+  }
+  return ret;
+}
+
 static int exec_cmd(const std::vector<std::string>& args) {
   CHECK(!args.empty());
   auto argv = StringVectorToNullTerminatedArray(args);
@@ -431,7 +441,13 @@ int format_volume(const std::string& volume, const std::string& directory,
 }
 
 int format_volume(const std::string& volume) {
-  return format_volume(volume, "", "");
+  const FstabEntry* v = android::fs_mgr::GetEntryForPath(&fstab, volume);
+  return format_volume(volume, "", v->fs_type);
+}
+
+int format_volume(const std::string& volume, const std::string& directory) {
+  const FstabEntry* v = android::fs_mgr::GetEntryForPath(&fstab, volume);
+  return format_volume(volume, directory, v->fs_type);
 }
 
 int setup_install_mounts() {
