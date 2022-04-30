@@ -499,8 +499,7 @@ int main(int argc, char** argv) {
   }
 
   if (get_build_type() == "user") {
-    device->RemoveMenuItemForAction(Device::WIPE_SYSTEM);
-    device->RemoveMenuItemForAction(Device::MOUNT_SYSTEM);
+    device->RemoveMenuItemForAction(Device::ENABLE_ADB);
   }
 
   if (!android::base::GetBoolProperty("ro.build.ab_update", false)) {
