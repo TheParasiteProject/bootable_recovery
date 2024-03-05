@@ -309,7 +309,7 @@ class ScreenRecoveryUI : public RecoveryUI, public DrawInterface {
   void PutChar(char);
   void ClearText();
 
-  virtual void LoadAnimation();
+  void LoadAnimation();
   std::unique_ptr<GRSurface> LoadBitmap(const std::string& filename);
   std::unique_ptr<GRSurface> LoadLocalizedBitmap(const std::string& filename);
 
@@ -416,7 +416,6 @@ class ScreenRecoveryUI : public RecoveryUI, public DrawInterface {
   // Display the background texts for "erasing", "error", "no_command" and "installing" for the
   // selected locale.
   void SelectAndShowBackgroundText(const std::vector<std::string>& locales_entries, size_t sel);
-
 };
 
 #endif  // RECOVERY_UI_H

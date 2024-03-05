@@ -197,23 +197,8 @@ bool RecoveryUI::Init(const std::string& /* locale */) {
   return true;
 }
 
-enum SwipeDirection { UP, DOWN, RIGHT, LEFT };
-
-static SwipeDirection FlipSwipeDirection(SwipeDirection direction) {
-  switch (direction) {
-    case UP:
-      return SwipeDirection::DOWN;
-    case DOWN:
-      return SwipeDirection::UP;
-    case RIGHT:
-      return SwipeDirection::LEFT;
-    case LEFT:
-      return SwipeDirection::RIGHT;
-  }
-}
-
 void RecoveryUI::OnTouchDetected(int dx, int dy) {
-  SwipeDirection direction;
+  enum SwipeDirection { UP, DOWN, RIGHT, LEFT } direction;
 
   // We only consider a valid swipe if:
   // - the delta along one axis is below touch_low_threshold_;
@@ -232,11 +217,6 @@ void RecoveryUI::OnTouchDetected(int dx, int dy) {
   if (is_bootreason_recovery_ui_ && !IsTextVisible()) {
     ShowText(true);
     return;
-  }
-
-  // Flip swipe direction if screen is rotated upside down
-  if (gr_get_rotation() == GRRotation::DOWN) {
-    direction = FlipSwipeDirection(direction);
   }
 
   LOG(DEBUG) << "Swipe direction=" << direction;
