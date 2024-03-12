@@ -134,7 +134,7 @@ bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm_func) {
   return success;
 }
 
-bool WipeData(Device* device, bool keep_memtag_mode, std::string fs) {
+bool WipeData(Device* device, std::string fs, bool keep_memtag_mode) {
   RecoveryUI* ui = device->GetUI();
   ui->Print("\n-- Wiping data...\n");
   ui->SetBackground(RecoveryUI::ERASING);
@@ -174,7 +174,7 @@ bool WipeData(Device* device, bool keep_memtag_mode, std::string fs) {
 }
 
 bool WipeData(Device* device, bool keep_memtag_mode) {
-  return WipeData(device, keep_memtag_mode, volume_for_mount_point("/data")->fs_type);
+  return WipeData(device, volume_for_mount_point("/data")->fs_type, keep_memtag_mode);
 }
 
 bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm_func) {
