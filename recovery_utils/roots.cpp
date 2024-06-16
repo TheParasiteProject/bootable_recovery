@@ -235,8 +235,8 @@ int format_volume(const std::string& volume, const std::string& directory,
     LOG(ERROR) << "format_volume: Failed to unmount \"" << v->mount_point << "\"";
     return -1;
   }
-  if (fs != "ext4" && fs != "f2fs") {
-    LOG(ERROR) << "format_volume: fs_type \"" << fs << "\" unsupported";
+  if (v->fs_type != "ext4" && v->fs_type != "f2fs") {
+    LOG(ERROR) << "format_volume: fs_type \"" << v->fs_type << "\" unsupported";
     return -1;
   }
 
