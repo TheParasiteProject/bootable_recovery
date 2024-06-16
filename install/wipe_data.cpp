@@ -54,7 +54,7 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, std::string_view new
     log_files = ReadLogFilesToMemory();
   }
 
-  ui->Print("Formatting %s to %s...\n", volume, fs.c_str());
+  ui->Print("Formatting %s to %s...\n", volume, new_fstype);
 
   Volume* vol = volume_for_mount_point(volume);
   if (vol->fs_mgr_flags.logical) {
