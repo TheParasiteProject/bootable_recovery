@@ -291,11 +291,6 @@ void RecoveryUI::OnTouchRelease() {
     return;
   }
 
-  // Flip swipe direction if screen is rotated upside down
-  if (gr_get_rotation() == GRRotation::DOWN) {
-    direction = FlipSwipeDirection(direction);
-  }
-
   // Check vkeys.  Only report if touch both starts and ends in the vkey.
   if (touch_start_.y() > gr_fb_height_real() && touch_pos_.y() > gr_fb_height_real()) {
     for (const auto& vk : virtual_keys_) {
