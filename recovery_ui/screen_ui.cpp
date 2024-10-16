@@ -870,6 +870,8 @@ void ScreenRecoveryUI::draw_battery_capacity_locked() {
   int y = margin_height_ + gr_get_height(default_logo.get());
   int icon_x, icon_y, icon_h, icon_w;
 
+  if (is_battery_less) return;
+
   // Battery status
   std::string batt_capacity = std::to_string(batt_capacity_) + '%';
 
@@ -1198,8 +1200,10 @@ bool ScreenRecoveryUI::Init(const std::string& locale) {
 
   LoadAnimation();
 
-  // Keep the battery capacity updated.
-  batt_monitor_thread_ = std::thread(&ScreenRecoveryUI::BattMonitorThreadLoop, this);
+  is_battery_less = android::base::GetBoolProperty("ro.recovery.battery_less", false);
+  if (!is_battery_less)
+    // Keep the battery capacity updated.
+    batt_monitor_thread_ = std::thread(&ScreenRecoveryUI::BattMonitorThreadLoop, this);
 
   // Keep the progress bar updated, even when the process is otherwise busy.
   progress_thread_ = std::thread(&ScreenRecoveryUI::ProgressThreadLoop, this);
