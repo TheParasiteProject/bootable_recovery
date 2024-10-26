@@ -49,18 +49,30 @@ license {
     ],
 }
 
-cc_defaults {
+soong_config_module_type {
+    name: "recovery_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "recovery",
+    value_variables: ["recovery_api_version"],
+    properties: [
+        "cflags",
+    ],
+}
+
+recovery_cc_defaults {
     name: "recovery_defaults",
 
-    cflags: [
-        "-D_FILE_OFFSET_BITS=64",
-
-        // Must be the same as RECOVERY_API_VERSION.
-        "-DRECOVERY_API_VERSION=3",
-
-        "-Wall",
-        "-Werror",
-    ],
+    soong_config_variables: {
+        recovery_api_version: {
+            cflags: [
+                "-D_FILE_OFFSET_BITS=64",
+                // Must be the same as RECOVERY_API_VERSION.
+                "-DRECOVERY_API_VERSION=%s",
+                "-Wall",
+                "-Werror",
+            ],
+        },
+    },
 }
 
 cc_library_static {
