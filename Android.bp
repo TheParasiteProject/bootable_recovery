@@ -176,7 +176,7 @@ cc_binary {
     ],
 
     shared_libs: [
-        "android.hardware.health-V3-ndk", // from librecovery_utils
+        "android.hardware.health-V4-ndk", // from librecovery_utils
         "android.hardware.boot-V1-ndk",
         "librecovery_ui",
     ],
@@ -256,4 +256,30 @@ filegroup {
     srcs: [
         "res-*/images/*_text.png",
     ],
+}
+
+// recovery_deps: A phony target that's depended on by `recovery`, which
+// builds additional modules conditionally based on Makefile variables.
+phony {
+    name: "recovery_deps",
+    required: [
+        "mkfs.erofs.recovery",
+        "dump.erofs.recovery",
+        "fsck.erofs.recovery",
+        // On A/B devices recovery-persist reads the recovery related file from the persist storage and
+        // copies them into /data/misc/recovery. Then, for both A/B and non-A/B devices, recovery-persist
+        // parses the last_install file and reports the embedded update metrics. Also, the last_install file
+        // will be deteleted after the report.
+        "recovery-persist",
+    ] + select(soong_config_variable("recovery", "target_userimages_use_f2fs"), {
+        true: [
+            "make_f2fs.recovery",
+            "fsck.f2fs.recovery",
+            "sload_f2fs.recovery",
+        ],
+        default: [],
+    }) + select(soong_config_variable("recovery", "has_board_cacheimage_partition_size"), {
+        false: ["recovery-refresh"],
+        default: [],
+    }),
 }

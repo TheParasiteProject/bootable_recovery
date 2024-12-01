@@ -47,37 +47,3 @@ LOCAL_SHARED_LIBRARIES := \
     librecovery_ui.recovery
 
 include $(BUILD_SHARED_LIBRARY)
-
-# recovery_deps: A phony target that's depended on by `recovery`, which
-# builds additional modules conditionally based on Makefile variables.
-# ======================================================================
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := recovery_deps
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 SPDX-license-identifier-MIT SPDX-license-identifier-OFL
-LOCAL_LICENSE_CONDITIONS := by_exception_only notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-
-ifeq ($(TARGET_USERIMAGES_USE_F2FS),true)
-LOCAL_REQUIRED_MODULES += \
-    make_f2fs.recovery \
-    fsck.f2fs.recovery \
-    sload_f2fs.recovery
-endif
-
-LOCAL_REQUIRED_MODULES += \
-    mkfs.erofs.recovery \
-    dump.erofs.recovery \
-    fsck.erofs.recovery
-
-# On A/B devices recovery-persist reads the recovery related file from the persist storage and
-# copies them into /data/misc/recovery. Then, for both A/B and non-A/B devices, recovery-persist
-# parses the last_install file and reports the embedded update metrics. Also, the last_install file
-# will be deteleted after the report.
-LOCAL_REQUIRED_MODULES += recovery-persist
-ifeq ($(BOARD_CACHEIMAGE_PARTITION_SIZE),)
-LOCAL_REQUIRED_MODULES += recovery-refresh
-endif
-
-include $(BUILD_PHONY_PACKAGE)
-
