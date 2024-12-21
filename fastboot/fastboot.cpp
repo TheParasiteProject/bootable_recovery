@@ -42,18 +42,18 @@ void FillDefaultFastbootLines(std::vector<std::string>& title_lines) {
   std::string baseband_version = android::base::GetProperty("ro.build.expect.baseband", "");
   std::string hw_version = android::base::GetProperty(
       "ro.boot.hardware.revision", android::base::GetProperty("ro.revision", ""));
-  title_lines.push_back("Product name - " + android::base::GetProperty("ro.product.device", ""));
+  title_lines.push_back("Product name: " + android::base::GetProperty("ro.product.device", ""));
   if (!android::base::EqualsIgnoreCase(bootloader_version, "unknown")) {
-    title_lines.push_back("Bootloader version - " + bootloader_version);
+    title_lines.push_back("Bootloader version: " + bootloader_version);
   }
   if (!baseband_version.empty()) {
-    title_lines.push_back("Baseband version - " + baseband_version);
+    title_lines.push_back("Baseband version: " + baseband_version);
   }
-  title_lines.push_back("Serial number - " + android::base::GetProperty("ro.serialno", ""));
-  title_lines.push_back(std::string("Secure boot - ") +
+  title_lines.push_back("Serial number: " + android::base::GetProperty("ro.serialno", ""));
+  title_lines.push_back(std::string("Secure boot: ") +
                         ((android::base::GetProperty("ro.secure", "") == "1") ? "yes" : "no"));
   if (!android::base::EqualsIgnoreCase(hw_version, "0")) {
-    title_lines.push_back("HW version - " + hw_version);
+    title_lines.push_back("HW version: " + hw_version);
   }
 }
 
