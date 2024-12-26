@@ -54,7 +54,7 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, std::string_view new
     log_files = ReadLogFilesToMemory();
   }
 
-  ui->Print("Formatting %s to %s...\n", volume, new_fstype);
+  ui->Print("Formatting %s to %s...\n", volume, std::string(new_fstype).c_str());
 
   Volume* vol = volume_for_mount_point(volume);
   if (vol->fs_mgr_flags.logical) {
@@ -110,10 +110,6 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, std::string_view new
   }
 
   return (result == 0);
-}
-
-static bool EraseVolume(const char* volume, RecoveryUI* ui) {
-  return EraseVolume(volume, ui, volume_for_mount_point(volume)->fs_type);
 }
 
 bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm_func,
