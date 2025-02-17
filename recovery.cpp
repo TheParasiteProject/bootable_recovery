@@ -33,13 +33,14 @@
 #include <string>
 #include <vector>
 
+#include <BootControlClient.h>
+
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <android/hardware/boot/1.0/IBootControl.h>
 #include <cutils/properties.h> /* for property_list */
 #include <fs_mgr/roots.h>
 #include <volume_manager/VolumeManager.h>
@@ -67,11 +68,7 @@
 using android::volmgr::VolumeManager;
 using android::volmgr::VolumeInfo;
 
-using android::sp;
 using android::fs_mgr::Fstab;
-using android::hardware::boot::V1_0::IBootControl;
-using android::hardware::boot::V1_0::CommandResult;
-using android::hardware::boot::V1_0::Slot;
 
 static constexpr const char* COMMAND_FILE = "/cache/recovery/command";
 static constexpr const char* LAST_KMSG_FILE = "/cache/recovery/last_kmsg";
@@ -243,22 +240,21 @@ std::string get_chosen_slot(Device* device) {
 
 int set_slot(Device* device) {
   std::string slot = get_chosen_slot(device);
-  CommandResult ret;
-  auto cb = [&ret](CommandResult result) { ret = result; };
-  Slot sslot = (slot == "A") ? 0 : 1;
-  sp<IBootControl> module = IBootControl::getService();
+  int32_t sslot = (slot == "A") ? 0 : 1;
+  const auto module = android::hal::BootControlClient::WaitForService();
   if (!module) {
     device->GetUI()->Print("Error getting bootctrl module.\n");
   } else {
-    auto result = module->setActiveBootSlot(sslot, cb);
-    if (result.isOk() && ret.success) {
+    const auto result = module->SetActiveBootSlot(sslot);
+    if (result.IsOk()) {
       device->GetUI()->Print("Switched slot to %s.\n", slot.c_str());
       device->GoHome();
+      return 0;
     } else {
       device->GetUI()->Print("Error changing bootloader boot slot to %s", slot.c_str());
     }
   }
-  return ret.success ? 0 : 1;
+  return 1;
 }
 
 static bool ask_to_wipe_data(Device* device) {
