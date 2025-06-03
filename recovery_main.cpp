@@ -494,7 +494,8 @@ int main(int argc, char** argv) {
     device->RemoveMenuItemForAction(Device::ENTER_RESCUE);
   }
 
-  if (!android::base::GetBoolProperty("ro.build.ab_update", false)) {
+  if (!android::base::GetBoolProperty("ro.build.ab_update", false)
+        || !IsDeviceUnlocked()) {
     device->RemoveMenuItemForAction(Device::SWAP_SLOT);
   }
 
